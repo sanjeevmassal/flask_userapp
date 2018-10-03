@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db
+from app.extensions import db, login_manager
 
 app = Flask(__name__)
 
@@ -10,4 +10,5 @@ def home():
 if __name__ == '__main__':
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/flask_userapp'
     db.init_app(app)
+    login_manager.init_app(app)
     app.run(debug=True)
