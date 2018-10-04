@@ -1,4 +1,5 @@
-
+from .views import home as home_blueprint
+from accounts import account as account_blueprint
 class BaseConfig(object):
     DEBUG = False
     SECRET_KEY = 'y9&3t1nzm)+0^9d=hc_ev(u3r!m-4ij=32a4s-=4rk95$57#-%'
@@ -20,4 +21,9 @@ class Production(BaseConfig):
 app_conf = {
     'development' : Development,
     'production' : Production
+}
+
+blueprints = {
+    home_blueprint,
+    account_blueprint
 }
