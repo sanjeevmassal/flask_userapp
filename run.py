@@ -1,14 +1,8 @@
-from flask import Flask
-from app.extensions import db, login_manager
+import os
+from app import create_app
+config_name = os.getenv('FLASK_CONFIG')
+app = create_app(config_name)
 
-app = Flask(__name__)
-
-@app.route('/', methods=['GET','POST'])
-def home():
-    return 'here'
 
 if __name__ == '__main__':
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/flask_userapp'
-    db.init_app(app)
-    login_manager.init_app(app)
-    app.run(debug=True)
+    app.run()

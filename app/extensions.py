@@ -3,4 +3,6 @@ from flask_login import LoginManager
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+
+
 __all__ = ['db',]
