@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, EqualTo, Length
+from app.extensions import db
 from .models import User
+
 
 
 class RegistrationForm(FlaskForm):
@@ -20,10 +22,13 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Email is already in use.')
 
     def save_form(self):
-        User(email=self.email.data, username=self.username.data,
+        user = User(email=self.email.data,
              first_name=self.first_name.data,
              last_name=self.last_name.data,
              password=self.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return user
 
 
 class LoginForm(FlaskForm):
@@ -33,3 +38,9 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
+
+    def validate_user(self):
+        user = User.query.filter_by(email=self.email.data).first()
+        if user and user.check_password(self.password.data):
+            return user
+        return False
