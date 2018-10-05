@@ -99,7 +99,7 @@ venv.bak/
 
 # mkdocs documentation
 /site
-
+migrations/
 # mypy
 .mypy_cache/
 .idea/

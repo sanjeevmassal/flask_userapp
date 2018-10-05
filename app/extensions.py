@@ -1,6 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
 
 db = SQLAlchemy()
 login_manager = LoginManager()
-__all__ = ['db','login_manager']
+mail = Mail()
+
+__all__ = ['db', 'login_manager','mail']

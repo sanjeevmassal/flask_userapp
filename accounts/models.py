@@ -2,7 +2,9 @@
 from flask_user import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.extensions import db,  login_manager
+from app.extensions import db
+from app import login_manager
+
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -11,25 +13,28 @@ class User(db.Model, UserMixin):
     email = db.Column(db.Unicode(255), nullable=False, server_default=u'', unique=True)
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.Unicode(50), nullable=False, server_default=u'')
-    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
+    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0', default=False)
     password_hash = db.Column(db.String(255), nullable=False, server_default='')
     last_login = db.Column(db.DateTime)
     is_admin = db.Column(db.Boolean, default=False)
-    
+    create_date = db.Column(db.DateTime, default=db.func.now())
+
     @property
     def password(self):
-        raise AttributeError('Password is not readable attribute.')
-    
+        return self.password_hash
+
     @password.setter
     def password(self, password):
-        self.password = generate_password_hash(password)
-        
+        self.password_hash = generate_password_hash(password)
+
     def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
         return '<User: {}>'.format(self.email)
-    
-    @login_manager.user_loader
-    def load_user(self,user_id):
-        return User.query.get(int(user_id))
+
+@login_manager.user_loader
+def load_user(user_id):
+    import pdb;
+    pdb.set_trace()
+    return User.query.get(int(user_id))
