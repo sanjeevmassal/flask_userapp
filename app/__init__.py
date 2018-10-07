@@ -1,12 +1,11 @@
-import jinja2
 from flask import Flask
 from flask_user import UserManager
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_debugtoolbar import DebugToolbarExtension
-from app.extensions import db, login_manager, mail
+from app.extensions import db, login_manager, mail, admin_panel
 from .conf import app_conf, blueprints
-from accounts.models import User
+
 
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
@@ -18,9 +17,9 @@ def create_app(config_name):
     mail.init_app(app)
     migrate = Migrate(app, db)
     toolbar = DebugToolbarExtension(app)
-    from accounts import models
-    user_manager = UserManager(app, db, models.User)
-    #user_manager = UserManager(app, db, models.User)
+    from accounts import models as account_models
+    UserManager(app, db, account_models.User)
+    init_admin(app,db)
     init_blueprints(app)
     app.debug = True
     return app
@@ -29,3 +28,6 @@ def create_app(config_name):
 def init_blueprints(app):
     for blueprint in blueprints:
         app.register_blueprint(blueprint)
+
+def init_admin(app, db):
+    admin_panel.init_app(app)
